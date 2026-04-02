@@ -7251,14 +7251,14 @@ function Library:CreateWindow(...)
             BorderColor3 = "OutlineColor";
         })
         
-        -- Create UIGradient for the tab button
+        -- Create UIGradient for the tab button (starts hidden)
         local TabGradient = Library:Create("UIGradient", {
             Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Library.MainColor);
                 ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             });
             Rotation = -90;
-            Transparency = NumberSequence.new(0.3);
+            Transparency = NumberSequence.new(1);  -- Hidden by default for inactive tabs
             Parent = TabButton;
         })
         
@@ -7555,7 +7555,8 @@ end
             TabButton.BackgroundColor3 = Library.MainColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "MainColor"
             
-            -- Update gradient for active state
+            -- Show gradient for active state
+            TabGradient.Transparency = NumberSequence.new(0.3)  -- Make gradient visible
             TabGradient.Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Library.MainColor);
                 ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
@@ -7573,12 +7574,8 @@ end
             TabButton.BackgroundColor3 = Library.BackgroundColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "BackgroundColor"
             
-            -- Update gradient for inactive state
-            TabGradient.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Library.MainColor);
-                ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
-            })
-            TabGradient.Rotation = -90
+            -- Hide gradient for inactive state
+            TabGradient.Transparency = NumberSequence.new(1)  -- Hide gradient completely
             
             TabFrame.Visible = false
         end
