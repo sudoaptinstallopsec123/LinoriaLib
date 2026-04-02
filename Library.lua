@@ -6865,7 +6865,7 @@ function Library:CreateWindow(...)
             RichText = true,
         })
         if Info.TitleColor then
-            TitleLabel.TextColor3 = Info.TitleColor
+            Library:AddToRegistry(TitleLabel, { TextColor3 = function() return Info.TitleColor end })
         else
             Library:AddToRegistry(TitleLabel, { TextColor3 = "FontColor" })
         end
@@ -7254,18 +7254,19 @@ function Library:CreateWindow(...)
         -- Create UIGradient for the tab button
         local TabGradient = Library:Create("UIGradient", {
             Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Library.BackgroundColor);
-                ColorSequenceKeypoint.new(1, Library.MainColor);
+                ColorSequenceKeypoint.new(0, Library.MainColor);
+                ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             });
             Rotation = 90;
+            Transparency = NumberSequence.new(0.3);
             Parent = TabButton;
         })
         
         Library:AddToRegistry(TabGradient, {
             Color = function()
                 return ColorSequence.new({
-                    ColorSequenceKeypoint.new(0, Library.BackgroundColor);
-                    ColorSequenceKeypoint.new(1, Library.MainColor);
+                    ColorSequenceKeypoint.new(0, Library.MainColor);
+                    ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
                 })
             end;
         })
@@ -7554,14 +7555,10 @@ end
             TabButton.BackgroundColor3 = Library.MainColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "MainColor"
             
-            -- Update gradient for active state (brighter)
+            -- Update gradient for active state
             TabGradient.Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Library.MainColor);
-                ColorSequenceKeypoint.new(1, Color3.fromRGB(
-                    math.min(Library.MainColor.R * 255 + 20, 255),
-                    math.min(Library.MainColor.G * 255 + 20, 255),
-                    math.min(Library.MainColor.B * 255 + 20, 255)
-                ));
+                ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             })
             TabGradient.Rotation = 90
             
@@ -7576,10 +7573,10 @@ end
             TabButton.BackgroundColor3 = Library.BackgroundColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "BackgroundColor"
             
-            -- Update gradient for inactive state (darker)
+            -- Update gradient for inactive state
             TabGradient.Color = ColorSequence.new({
-                ColorSequenceKeypoint.new(0, Library.BackgroundColor);
-                ColorSequenceKeypoint.new(1, Library.MainColor);
+                ColorSequenceKeypoint.new(0, Library.MainColor);
+                ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             })
             TabGradient.Rotation = 90
             
