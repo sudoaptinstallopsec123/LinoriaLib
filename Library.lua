@@ -7574,8 +7574,8 @@ end
             TabButton.BackgroundColor3 = Library.BackgroundColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "BackgroundColor"
             
-            -- Hide gradient for inactive state
-            TabGradient.Transparency = NumberSequence.new(1)  -- Hide gradient completely
+            -- Make gradient subtle for inactive state (still visible but less prominent)
+            TabGradient.Transparency = NumberSequence.new(0.65)  -- Subtle gradient visible
             
             TabFrame.Visible = false
         end
