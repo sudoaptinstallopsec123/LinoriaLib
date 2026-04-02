@@ -7257,7 +7257,7 @@ function Library:CreateWindow(...)
                 ColorSequenceKeypoint.new(0, Library.MainColor);
                 ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             });
-            Rotation = 90;
+            Rotation = -90;
             Transparency = NumberSequence.new(0.3);
             Parent = TabButton;
         })
@@ -7560,7 +7560,7 @@ end
                 ColorSequenceKeypoint.new(0, Library.MainColor);
                 ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             })
-            TabGradient.Rotation = 90
+            TabGradient.Rotation = -90
             
             TabFrame.Visible = true
 
@@ -7578,7 +7578,7 @@ end
                 ColorSequenceKeypoint.new(0, Library.MainColor);
                 ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
             })
-            TabGradient.Rotation = 90
+            TabGradient.Rotation = -90
             
             TabFrame.Visible = false
         end
