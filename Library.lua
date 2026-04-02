@@ -7227,12 +7227,21 @@ function Library:CreateWindow(...)
             TableType = "Tab";
         }
 
-        local TabButtonWidth = Library:GetTextBounds(Tab.Name, Library.Font, 16)
+        -- Calculate equal width for all tabs
+        local TotalTabs = 0
+        for _ in next, Window.Tabs do
+            TotalTabs = TotalTabs + 1
+        end
+        TotalTabs = TotalTabs + 1  -- Account for the new tab being added
+        
+        local TabPadding = WindowInfo.TabPadding or 1
+        local TabButtonSize = UDim2.new(1 / TotalTabs, -TabPadding, 0.85, 0)
 
         local TabButton = Library:Create("Frame", {
             BackgroundColor3 = Library.BackgroundColor;
             BorderColor3 = Library.OutlineColor;
-            Size = UDim2.new(0, TabButtonWidth + 8 + 4, 0.85, 0);
+            BorderMode = Enum.BorderMode.Inset;
+            Size = TabButtonSize;
             ZIndex = 1;
             Parent = TabArea;
         })
@@ -7240,6 +7249,25 @@ function Library:CreateWindow(...)
         Library:AddToRegistry(TabButton, {
             BackgroundColor3 = "BackgroundColor";
             BorderColor3 = "OutlineColor";
+        })
+        
+        -- Create UIGradient for the tab button
+        local TabGradient = Library:Create("UIGradient", {
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Library.BackgroundColor);
+                ColorSequenceKeypoint.new(1, Library.MainColor);
+            });
+            Rotation = 90;
+            Parent = TabButton;
+        })
+        
+        Library:AddToRegistry(TabGradient, {
+            Color = function()
+                return ColorSequence.new({
+                    ColorSequenceKeypoint.new(0, Library.BackgroundColor);
+                    ColorSequenceKeypoint.new(1, Library.MainColor);
+                })
+            end;
         })
 
         local TabButtonLabel = Library:CreateLabel({
@@ -7525,6 +7553,18 @@ end
             Blocker.BackgroundTransparency = 0
             TabButton.BackgroundColor3 = Library.MainColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "MainColor"
+            
+            -- Update gradient for active state (brighter)
+            TabGradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Library.MainColor);
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(
+                    math.min(Library.MainColor.R * 255 + 20, 255),
+                    math.min(Library.MainColor.G * 255 + 20, 255),
+                    math.min(Library.MainColor.B * 255 + 20, 255)
+                ));
+            })
+            TabGradient.Rotation = 90
+            
             TabFrame.Visible = true
 
             Tab:Resize()
@@ -7535,6 +7575,14 @@ end
             Blocker.BackgroundTransparency = 1
             TabButton.BackgroundColor3 = Library.BackgroundColor
             Library.RegistryMap[TabButton].Properties.BackgroundColor3 = "BackgroundColor"
+            
+            -- Update gradient for inactive state (darker)
+            TabGradient.Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Library.BackgroundColor);
+                ColorSequenceKeypoint.new(1, Library.MainColor);
+            })
+            TabGradient.Rotation = 90
+            
             TabFrame.Visible = false
         end
         Tab.Hide = Tab.HideTab
@@ -7551,13 +7599,29 @@ end
         function Tab:SetName(Name)
             if typeof(Name) == "string" then
                 Tab.Name = Name
-
-                local TabButtonWidth = Library:GetTextBounds(Tab.Name, Library.Font, 16)
-
-                TabButton.Size = UDim2.new(0, TabButtonWidth + 8 + 4, 0.85, 0)
                 TabButtonLabel.Text = Tab.Name
+                -- Note: Tab width is now equal for all tabs, so size is managed globally
             end
         end
+        
+        -- Helper function to recalculate and resize all tab buttons
+        local function RecalculateTabSizes()
+            local TotalTabs = 0
+            for _ in next, Window.Tabs do
+                TotalTabs = TotalTabs + 1
+            end
+            
+            if TotalTabs == 0 then return end
+            
+            local NewSize = UDim2.new(1 / TotalTabs, -TabPadding, 0.85, 0)
+            for _, ExistingTab in next, Window.Tabs do
+                if ExistingTab.TabButton then
+                    ExistingTab.TabButton.Size = NewSize
+                end
+            end
+        end
+        
+        Tab.TabButton = TabButton
 
         function Tab:AddGroupbox(Info)
             local Groupbox = {
@@ -7885,6 +7949,10 @@ end
         end
 
         Window.Tabs[Name] = Tab
+        
+        -- Recalculate tab sizes for all existing tabs
+        RecalculateTabSizes()
+        
         return Tab
     end
 
