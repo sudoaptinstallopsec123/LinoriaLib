@@ -7283,14 +7283,14 @@ function Library:CreateWindow(...)
             BorderColor3 = "OutlineColor";
         })
         
-        -- Create UIGradient for the tab button (starts hidden)
+        -- Create UIGradient for the tab button (visible by default)
         local TabGradient = Library:Create("UIGradient", {
             Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Library.MainColor);
                 ColorSequenceKeypoint.new(1, Library.AccentColor);
             });
             Rotation = -90;
-            Transparency = NumberSequence.new(1);  -- Hidden by default for inactive tabs
+            Transparency = NumberSequence.new(0.65);  -- Visible by default for all tabs
             Parent = TabButton;
         })
         
