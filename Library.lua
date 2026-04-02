@@ -7255,7 +7255,7 @@ function Library:CreateWindow(...)
         local TabGradient = Library:Create("UIGradient", {
             Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Library.MainColor);
-                ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
+                ColorSequenceKeypoint.new(1, Library.AccentColor);
             });
             Rotation = -90;
             Transparency = NumberSequence.new(1);  -- Hidden by default for inactive tabs
@@ -7266,7 +7266,7 @@ function Library:CreateWindow(...)
             Color = function()
                 return ColorSequence.new({
                     ColorSequenceKeypoint.new(0, Library.MainColor);
-                    ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
+                    ColorSequenceKeypoint.new(1, Library.AccentColor);
                 })
             end;
         })
@@ -7559,7 +7559,7 @@ end
             TabGradient.Transparency = NumberSequence.new(0.3)  -- Make gradient visible
             TabGradient.Color = ColorSequence.new({
                 ColorSequenceKeypoint.new(0, Library.MainColor);
-                ColorSequenceKeypoint.new(1, Color3.new(0, 0, 0));
+                ColorSequenceKeypoint.new(1, Library.AccentColor);
             })
             TabGradient.Rotation = -90
             
