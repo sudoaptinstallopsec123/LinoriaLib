@@ -443,6 +443,10 @@ function Library:GetBetterColor(Color: Color3, Add: number): Color3
     )
 end
 
+function Library:Color3ToHex(Color: Color3): string
+    return string.format("%02x%02x%02x", math.round(Color.R * 255), math.round(Color.G * 255), math.round(Color.B * 255))
+end
+
 --// Library Functions \\--
 function Library:Validate(Table: { [string]: any }, Template: { [string]: any }): { [string]: any }
     if typeof(Table) ~= "table" then
@@ -6592,8 +6596,36 @@ function Library:CreateWindow(...)
         Size = UDim2.new(0, 0, 0, 25);
         Text = WindowInfo.Title or "";
         TextXAlignment = Enum.TextXAlignment.Left;
+        RichText = true;
         ZIndex = 1;
         Parent = Inner;
+    })
+
+    -- Store the original title template for dynamic updates
+    Window.TitleLabel = WindowLabel
+    Window.OriginalTitleTemplate = WindowInfo.Title or ""
+    
+    -- Function to update title with current accent color
+    local function UpdateTitleWithAccentColor()
+        local hexAccent = Library:Color3ToHex(Library.AccentColor)
+        local titleText = Window.OriginalTitleTemplate
+        -- Replace all hex color placeholders with current accent color
+        titleText = titleText:gsub("#[0-9a-fA-F]+", "#" .. hexAccent)
+        -- Also replace simple hex patterns like #000000
+        WindowLabel.Text = titleText
+    end
+    
+    -- Update title immediately and whenever accent color changes
+    UpdateTitleWithAccentColor()
+    
+    -- Add to registry with dynamic update function
+    Library:AddToRegistry(WindowLabel, {
+        Text = function()
+            local hexAccent = Library:Color3ToHex(Library.AccentColor)
+            local titleText = Window.OriginalTitleTemplate
+            titleText = titleText:gsub("#[0-9a-fA-F]+", "#" .. hexAccent)
+            return titleText
+        end
     })
 
     local MainSectionOuter = Library:Create("Frame", {
