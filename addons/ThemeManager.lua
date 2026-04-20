@@ -14,7 +14,13 @@ LPH_NO_VIRTUALIZE(function()
 
 		ThemeManager.Library = nil
 		ThemeManager.BuiltInThemes = {
-			["Default"] = {
+            ["Default"] = {
+				1,
+				httpService:JSONDecode(
+					'{"FontColor":"bbbbbb","MainColor":"171717","AccentColor":"8388aa","BackgroundColor":"171717","OutlineColor":"2c2c2c"}'
+				),
+			},
+			["Yellow"] = {
 				1,
 				httpService:JSONDecode(
 					'{"FontColor":"d9d9d9","MainColor":"171717","AccentColor":"ff992b","BackgroundColor":"141414","OutlineColor":"323232"}'
