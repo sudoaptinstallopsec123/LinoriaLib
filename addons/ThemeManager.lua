@@ -9,7 +9,7 @@ LPH_NO_VIRTUALIZE(function()
 	local Toggles = getgenv().Toggles
 
 	do
-		ThemeManager.Folder = "84e Client/Themes"
+		ThemeManager.Folder = "Perc Client/Themes"
 		-- if not isfolder(ThemeManager.Folder) then makefolder(ThemeManager.Folder) end
 
 		ThemeManager.Library = nil
