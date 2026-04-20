@@ -10,7 +10,7 @@ LPH_NO_VIRTUALIZE(function()
 	local Toggles = getgenv().Toggles
 
 	do
-		SaveManager.Folder = "84e Client"
+		SaveManager.Folder = "Perc"
 		SaveManager.Ignore = {}
 		SaveManager.Parser = {
 			Toggle = {
