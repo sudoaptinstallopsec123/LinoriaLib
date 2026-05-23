@@ -4038,6 +4038,87 @@ function Library:CreateWindow(...)
 		Fading = false
 	end
 
+local ToggleBtnOuter = Library:Create('Frame', {
+    AnchorPoint = Vector2.new(0.5, 1);
+    Position = UDim2.new(0.5, 0, 1, -20);
+    Size = UDim2.new(0, 38, 0, 38);
+    BackgroundColor3 = Color3.new(0, 0, 0);
+    BorderSizePixel = 0;
+    ZIndex = 1000;
+    Parent = ScreenGui;
+});
+
+local Niggerglow = Library:Create('ImageLabel', {
+    ImageColor3 = Library.AccentColor;
+    ScaleType = Enum.ScaleType.Slice;
+    BackgroundTransparency = 1;
+    BorderSizePixel = 0;
+    Image = 'http://www.roblox.com/asset/?id=18245826428';
+    ImageTransparency = 0.8;
+    Position = UDim2.new(0, -20, 0, -20);
+    Size = UDim2.new(1, 40, 1, 40);
+    ZIndex = 999;
+    SliceCenter = Rect.new(Vector2.new(21, 21), Vector2.new(79, 79));
+    Parent = ToggleBtnOuter;
+});
+
+Library:AddToRegistry(Niggerglow, { ImageColor3 = 'AccentColor' });
+
+local ToggleBtnInner = Library:Create('Frame', {
+    BackgroundColor3 = Library.MainColor;
+    BorderColor3 = Library.AccentColor;
+    BorderMode = Enum.BorderMode.Inset;
+    Size = UDim2.new(1, 0, 1, 0);
+    ZIndex = 1000;
+    Parent = ToggleBtnOuter;
+});
+
+Library:AddToRegistry(ToggleBtnInner, { BackgroundColor3 = 'MainColor' });
+Library:AddToRegistry(ToggleBtnInner, { BorderColor3 = 'AccentColor' });
+
+Library:Create('ImageLabel', {
+    BackgroundTransparency = 1;
+    BorderSizePixel = 0;
+    AnchorPoint = Vector2.new(0.5, 0.5);
+    Position = UDim2.new(0.5, 0, 0.5, 0);
+    Size = UDim2.new(0, 20, 0, 20);
+    Image = 'rbxassetid://133928895797824'; -- replace this
+    ZIndex = 1001;
+    Parent = ToggleBtnInner;
+});
+
+local dragging, dragInput, dragStart, startPos = false, nil, nil, nil;
+
+ToggleBtnOuter.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true;
+        dragInput = input;
+        dragStart = input.Position;
+        startPos = ToggleBtnOuter.Position;
+    end;
+end);
+
+game:GetService('UserInputService').InputChanged:Connect(function(input)
+    if not dragging then return end
+    if input.UserInputType ~= Enum.UserInputType.MouseMovement and input.UserInputType ~= Enum.UserInputType.Touch then return end
+    local delta = input.Position - dragStart;
+    local screen = workspace.CurrentCamera.ViewportSize;
+    local half = ToggleBtnOuter.AbsoluteSize / 2;
+    TweenService:Create(ToggleBtnOuter, TweenInfo.new(0.05, Enum.EasingStyle.Linear), {
+        Position = UDim2.fromOffset(
+            math.clamp(startPos.X.Offset + delta.X, half.X, screen.X - half.X),
+            math.clamp(startPos.Y.Offset + delta.Y, half.Y, screen.Y - half.Y)
+        );
+    }):Play();
+end);
+
+game:GetService('UserInputService').InputEnded:Connect(function(input)
+    if input ~= dragInput then return end
+    if (input.Position - dragStart).Magnitude < 6 then task.spawn(Library.Toggle) end
+    dragging = false;
+end);
+
+
 	Library:GiveSignal(InputService.InputBegan:Connect(function(Input, Processed)
 		if type(Library.ToggleKeybind) == "table" and Library.ToggleKeybind.Type == "KeyPicker" then
 			if
